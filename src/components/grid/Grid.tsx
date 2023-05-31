@@ -41,9 +41,21 @@ export const Grid: React.FC = () => {
     setButtonStates(updatedButtonStates);
 
     if (socket && socket.readyState === WebSocket.OPEN) {
-      console.log('im here')
+      interface Point {
+        x: number;
+        y: number;
+        state: boolean;
+    }
+    
+    const getGridCoordinate = (num: number): Point => {
+      // get the x,y coordinates from the passed grid num
+      const x: number = num % 8;
+      const y: number = Math.floor(num / 8);
+      return { x, y: 7 - y, state: buttonStates[num] };
+    }
+
     // Send a string message to the WebSocket server
-    socket.send(`you clicked button ${index}`);
+    socket.send(JSON.stringify(getGridCoordinate(index)));
   } else {
     console.error("WebSocket is not connected.");
   }
